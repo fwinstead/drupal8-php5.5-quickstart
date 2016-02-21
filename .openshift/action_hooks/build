@@ -12,9 +12,12 @@ then
 	# Need a placehlder file at:  ${OPENSHIFT_REPO_DIR}/www/index.cgi
 	# start build in background
 	nohup bash ${OPENSHIFT_REPO_DIR}/misc/make.sh > ${LOG_FILE} 2>&1 &
-	PID=$!;  echo $PID > ${PID_FILE} ; echo "Build started. pid : ${PID}"
+	PID=$!;  echo $PID > ${PID_FILE} ; echo -e "\tBuild started. pid : ${PID}"
+	# setup for interactive access
+	cp  ${OPENSHIFT_HOMEDIR}runtime/repo/misc.bash_profile*  ${OPENSHIFT_HOMEDIR}/app-root/data/.
+
 else
-	echo "Build is already in progress, pid: ${PID}"
+	echo -e "\tBuild is already in progress, pid: ${PID}"
 	ps -ef | grep "${PID}"
 fi
 exit

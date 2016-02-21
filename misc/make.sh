@@ -21,17 +21,17 @@ pushd ${OPENSHIFT_REPO_DIR}/misc
 	then
 		return 0 # FTW ????
 	fi
-	echo "Check PHP ${DIST_PHP_VER} not found. Install started."
+	echo -e "\tCheck PHP ${DIST_PHP_VER} not found. Install started."
 
 	
 	pushd ${OPENSHIFT_DIY_DIR}
 	rm -f php-${DIST_PHP_VER}.tar.gz
 
 	if [ -d php-${DIST_PHP_VER} ]; then
-		echo "PHP Source code dir found. skipping downloading."
+		echo -e "\tPHP Source code dir found. skipping downloading."
 	else
 		TARGZ="php-${DIST_PHP_VER}.tar.gz"
-		echo "Downloading PHP source code"
+		echo -e "\tDownloading PHP source code"
 		wget -nv "http://php.net/distributions/${TARGZ}" && tar -zxf "${TARGZ}" && rm -f "${TARGZ}"
 		if [ $? != 0 ]; then
 			echo "ERROR! Download failed: ${TARGZ}"
@@ -95,9 +95,10 @@ popd
 # http://www.drush.org/en/master/install/
 pushd ${OPENSHIFT_REPO_DIR}
 	DRUSH_PHAR="drush.phar"
+	echo -e "\tInstalling: ${DRUSH_PHAR}"
 	wget -nv "http://files.drush.org/${DRUSH_PHAR}"
 	if [ $? != 0 ]; then
-		echo "ERROR! Download failed: ${DRUSH_PHAR}"
+		echo -e "\tERROR! Download failed: ${DRUSH_PHAR}"
 		return 1	# FTW ????
 	fi
 	# TEST
