@@ -2,7 +2,8 @@
 
 # set -e MAYBE
 
-PID_FILE=/tmp/build_pid
+LOG_FILE="/tmp/build_log"
+PID_FILE="/tmp/build_pid"
 PID=$(cat "${PID_FILE}" 2> /dev/null)
 
 # check to see if build is already running
