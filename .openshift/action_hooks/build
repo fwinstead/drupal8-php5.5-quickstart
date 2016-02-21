@@ -14,7 +14,7 @@ then
 	nohup bash ${OPENSHIFT_REPO_DIR}/misc/make.sh > ${LOG_FILE} 2>&1 &
 	PID=$!;  echo $PID > ${PID_FILE} ; echo -e "\tBuild started. pid : ${PID}"
 	# setup for interactive access
-	cp  ${OPENSHIFT_HOMEDIR}runtime/repo/misc.bash_profile*  ${OPENSHIFT_HOMEDIR}/app-root/data/.
+	cp  ${OPENSHIFT_HOMEDIR}runtime/repo/misc/.bash_profile*  ${OPENSHIFT_HOMEDIR}/app-root/data/.
 
 else
 	echo -e "\tBuild is already in progress, pid: ${PID}"
