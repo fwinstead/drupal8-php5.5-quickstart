@@ -2,6 +2,9 @@
 
 # build PHP and get latest Drupal 8
 
+# NEED: pass this in: ###############################
+REDIRECTFROM='atlanticcoastcabinets\.com'
+
 # not sure if needed ?
 export HTTPD_ARGUMENT="-f ${OPENSHIFT_REPO_DIR}/conf/httpd.conf"
 env|>${OPENSHIFT_TMP_DIR}/httpd_temp.conf awk 'BEGIN{FS="="} $1 ~ /^OPENSHIFT/ {print "PassEnv", $1}'
@@ -23,7 +26,6 @@ pushd ${OPENSHIFT_REPO_DIR}/misc
 	fi
 	echo -e "\tCheck PHP ${DIST_PHP_VER} not found. Install started."
 
-	
 	pushd ${OPENSHIFT_DIY_DIR}
 	rm -f php-${DIST_PHP_VER}.tar.gz
 
@@ -102,15 +104,70 @@ pushd ${OPENSHIFT_REPO_DIR}
 		return 1	# FTW ????
 	fi
 	# TEST
+	echo -e "\tDrush test:"
 	PHP="${OPENSHIFT_HOMEDIR}/app-root/runtime/bin/php"
-	${PHP} drush.phar core-status
-	#chmod +x drush.phar # need change path, maybe PATH
-	# drush init
+	${PHP} ${OPENSHIFT_REPO_DIR}drush.phar core-status
+	echo
 popd
 ###################################	
-# Drupal 8 install using drush
+# Drupal 8 install
+pushd ${OPENSHIFT_REPO_DIR}
+	VERSION="8.0.3"
+	DRUPAL="drupal-${VERSION}" # NEED grab latest version
+	FNAME="${DRUPAL}.tar.gz"
+	SETTINGS="settings.php"
+	cd ${OPENSHIFT_REPO_DIR}
+	# Get Drupal 8.x 
+	if test \! -f "${FNAME}"; then wget "https://www.drupal.org/files/projects/${FNAME}" fi
+	time tar -zxf "${FNAME}" > /dev/null
 
+	cd ${OPENSHIFT_REPO_DIR}/${DRUPAL}/sites/default
+	cp "default.${SETTINGS}" "${SETTINGS}"
+	chmod a+w . "${SETTINGS}"
+	cat << "EOF" >> "${SETTINGS}"
+        # FTW modifications Begin ######################
+        # "Trusted Host Settings" Security fix
+        # could be more secure by limiting rhcloud.com
+        # https://www.drupal.org/node/1992030
+        # https://www.drupal.org/node/2410395
+	# MIGHT BE BROKEN:
+        $settings['trusted_host_patterns'] = array(
+          '^'${REDIRECTFROM}'$',		
+          '^.+\.'${REDIRECTFROM}'$',		
+          '^.+\.rhcloud\.com$'
+        );
+
+        # Openshift mods
+        # When run from Drush, only $_ENV is available.  Might be a bug
+        if (array_key_exists('OPENSHIFT_APP_NAME', $_SERVER)) {
+          $src = $_SERVER;
+        } else {
+          $src = $_ENV;
+        }
+        $databases = array (
+          'default' =>
+          array (
+            'default' =>
+            array (
+              'database' => $src['OPENSHIFT_APP_NAME'],
+              'username' => $src['OPENSHIFT_MYSQL_DB_USERNAME'],
+              'password' => $src['OPENSHIFT_MYSQL_DB_PASSWORD'],
+              'host' => $src['OPENSHIFT_MYSQL_DB_HOST'],
+              'port' => $src['OPENSHIFT_MYSQL_DB_PORT'],
+              'driver' => 'mysql',
+              'prefix' => '',
+            ),
+          ),
+        );
+        $scheme = !empty($src['HTTPS']) ? 'https' : 'http';
+        $base_url = $scheme . '://' . $src['HTTP_HOST'];
+        $conf['file_private_path'] = $src['OPENSHIFT_DATA_DIR'] . 'private/';
+        $conf['file_temporary_path'] = $src['OPENSHIFT_TMP_DIR'] . 'drupal/';
+        # FTW modifications End ######################
+
+popd
 ###################################	
 
 
 popd
+echo "Normal Finish."
