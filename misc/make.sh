@@ -131,9 +131,9 @@ pushd ${OPENSHIFT_REPO_DIR}
 	# https://www.drupal.org/node/2410395
 
 	echo '# Trusted Host Settings security fix' >> "${SETTINGS}"
-	echo '$settings[\'trusted_host_patterns\'] = array(' >> "${SETTINGS}"
+	echo '$settings["trusted_host_patterns"] = array(' >> "${SETTINGS}"
 	# loop through REDIRECTS
-	# pass in REDIRECTS=('^atlanticcoastcabinets\.com$', '^.+\.atlanticcoastcabinets\.com$', '^.+\.rhcloud\.com$')
+	# pass in REDIRECTS=("^atlanticcoastcabinets\.com$", "^.+\.atlanticcoastcabinets\.com$", "^.+\.rhcloud\.com$")
 	for i in ${REDIRECTS[*]}
 	do
 		echo "'${i}'"  >> "${SETTINGS}"
