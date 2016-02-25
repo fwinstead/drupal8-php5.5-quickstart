@@ -43,7 +43,7 @@ pushd ${OPENSHIFT_REPO_DIR}/misc
 		mkdir -p ${CONF_DIR}/php5/conf.d/
 	
 		[ ! -f Makefile ] && \
-			./configure \
+			echo ./configure \
 			--with-libdir=lib64 \
 			--prefix=${ROOT_DIR} \
 			--with-config-file-path=${CONF_DIR}/php5/ \
@@ -139,4 +139,14 @@ pushd ${OPENSHIFT_REPO_DIR}
 		echo "'${i}'"  >> "${SETTINGS}"
 	done
 	echo ');' >> "${SETTINGS}"
+
+
+	echo '$settings[\'trusted_host_patterns\'] = array(' >> /tmp/test
+	for i in ${REDIRECTS[*]}
+	do
+		echo "'${i}'"  >> /tmp/test
+	done
+	echo ');' /tmp/test
+
+
 
