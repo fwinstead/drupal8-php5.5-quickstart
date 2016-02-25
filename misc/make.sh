@@ -2,9 +2,6 @@
 
 # build PHP and get latest Drupal 8
 
-# NEED: pass this in: ###############################
-REDIRECTFROM='atlanticcoastcabinets\.com'
-
 # not sure if needed ?
 export HTTPD_ARGUMENT="-f ${OPENSHIFT_REPO_DIR}/conf/httpd.conf"
 env|>${OPENSHIFT_TMP_DIR}/httpd_temp.conf awk 'BEGIN{FS="="} $1 ~ /^OPENSHIFT/ {print "PassEnv", $1}'
@@ -87,8 +84,8 @@ pushd ${OPENSHIFT_REPO_DIR}/misc
 			--enable-sysvshm \
 			--enable-sysvmsg \
 			--enable-opcache
-		make
-		make install
+		# ##### make
+		# ##### make install
 	popd
 		rm -rf php-${DIST_PHP_VER}
 popd
@@ -124,50 +121,22 @@ pushd ${OPENSHIFT_REPO_DIR}
 	cd ${OPENSHIFT_REPO_DIR}/${DRUPAL}/sites/default
 	cp "default.${SETTINGS}" "${SETTINGS}"
 	chmod a+w . "${SETTINGS}"
-	cat << "EOF" >> "${SETTINGS}"
-        # FTW modifications Begin ######################
-        # "Trusted Host Settings" Security fix
-        # could be more secure by limiting rhcloud.com
-        # https://www.drupal.org/node/1992030
-        # https://www.drupal.org/node/2410395
-	# MIGHT BE BROKEN:
-        $settings['trusted_host_patterns'] = array(
-          '^'${REDIRECTFROM}'$',		
-          '^.+\.'${REDIRECTFROM}'$',		
-          '^.+\.rhcloud\.com$'
-        );
 
-        # Openshift mods
-        # When run from Drush, only $_ENV is available.  Might be a bug
-        if (array_key_exists('OPENSHIFT_APP_NAME', $_SERVER)) {
-          $src = $_SERVER;
-        } else {
-          $src = $_ENV;
-        }
-        $databases = array (
-          'default' =>
-          array (
-            'default' =>
-            array (
-              'database' => $src['OPENSHIFT_APP_NAME'],
-              'username' => $src['OPENSHIFT_MYSQL_DB_USERNAME'],
-              'password' => $src['OPENSHIFT_MYSQL_DB_PASSWORD'],
-              'host' => $src['OPENSHIFT_MYSQL_DB_HOST'],
-              'port' => $src['OPENSHIFT_MYSQL_DB_PORT'],
-              'driver' => 'mysql',
-              'prefix' => '',
-            ),
-          ),
-        );
-        $scheme = !empty($src['HTTPS']) ? 'https' : 'http';
-        $base_url = $scheme . '://' . $src['HTTP_HOST'];
-        $conf['file_private_path'] = $src['OPENSHIFT_DATA_DIR'] . 'private/';
-        $conf['file_temporary_path'] = $src['OPENSHIFT_TMP_DIR'] . 'drupal/';
-        # FTW modifications End ######################
+	# Drupal settings.php
+	cat "${OPENSHIFT_REPO_DIR}/misc/openshift.drupal.append.settings.php" >> "${SETTINGS}"
 
-popd
-###################################	
+	# "Trusted Host Settings" Security fix
+	# could be more secure by limiting rhcloud.com
+	# https://www.drupal.org/node/1992030
+	# https://www.drupal.org/node/2410395
 
+	echo '# Trusted Host Settings security fix' >> "${SETTINGS}"
+	echo '$settings[\'trusted_host_patterns\'] = array(' >> "${SETTINGS}"
+	# loop through REDIRECTS
+	# pass in REDIRECTS=('^atlanticcoastcabinets\.com$', '^.+\.atlanticcoastcabinets\.com$', '^.+\.rhcloud\.com$')
+	for i in ${REDIRECTS[*]}
+	do
+		echo "'${i}'"  >> "${SETTINGS}"
+	done
+	echo ');' >> "${SETTINGS}"
 
-popd
-echo "Normal Finish."
