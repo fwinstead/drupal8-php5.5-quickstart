@@ -148,5 +148,6 @@ pushd ${OPENSHIFT_REPO_DIR}
 	done
 	echo ');' /tmp/test
 
+popd
 
 
