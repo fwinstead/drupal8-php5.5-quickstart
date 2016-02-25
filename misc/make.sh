@@ -141,7 +141,7 @@ pushd ${OPENSHIFT_REPO_DIR}
 	echo ');' >> "${SETTINGS}"
 
 
-	echo '$settings[\'trusted_host_patterns\'] = array(' >> /tmp/test
+	echo '$settings["trusted_host_patterns"] = array(' >> /tmp/test
 	for i in ${REDIRECTS[*]}
 	do
 		echo "'${i}'"  >> /tmp/test
