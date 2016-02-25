@@ -14,3 +14,5 @@ rhc create-app d8test mysql-5.5 phpmyadmin-4 cron-1.4 diy-0.1 --from-code https:
 
 Inspired by:https://github.com/laobubu/openshift-php5.5-cgi-apache
 
+
+
