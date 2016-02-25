@@ -2,6 +2,14 @@
 
 # set -e MAYBE
 
+echo hi
+
+echo "Test: " ${REDIRECTS[*]}
+
+echo bye
+
+exit
+
 LOG_FILE="/tmp/build_log"
 PID_FILE="/tmp/build_pid"
 PID=$(cat "${PID_FILE}" 2> /dev/null)
