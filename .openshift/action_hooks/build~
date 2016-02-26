@@ -1,7 +1,14 @@
 #!/bin/bash
 
-# build site on Openshift
-# set -e  # MAYBE NEEDED
+# set -e MAYBE
+
+echo hi
+
+echo "Test: " ${REDIRECTS[*]}
+
+echo bye
+
+exit
 
 LOG_FILE="/tmp/build_log"
 PID_FILE="/tmp/build_pid"
