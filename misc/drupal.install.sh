@@ -4,6 +4,7 @@
 
 pushd ${OPENSHIFT_REPO_DIR}
 	VERSION=$(wget -q -O - https://www.drupal.org/project/drupal | grep 'drupal-8' | sed 's/^.*drupal-//; s/-.*//;')
+	VERSION="8.0.3"		# REMOVE after TESTING update.sh
 	DRUPAL="drupal-${VERSION}"
 	FNAME="${DRUPAL}.tar.gz"
 	DEFAULT="${OPENSHIFT_REPO_DIR}${DRUPAL}/sites/default"
@@ -30,7 +31,7 @@ pushd ${OPENSHIFT_REPO_DIR}
 	done
 	echo ');' >> "${SETTINGS}"
 
-	rm -rf www
-	mv "${DRUPAL}" www
+	mv www www.OLD
+	ln -s "${DRUPAL}" www
 popd
 

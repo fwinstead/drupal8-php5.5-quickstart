@@ -55,5 +55,6 @@ alias catcronlog="cat ~/app-root/logs/cron*.log"
 alias catmysqllog="cat ~/app-root/logs/mysql.log"
 alias catphpmyadminlog="cat ~/app-root/logs/phpmyadmin.log"
 alias tailbuildlog="tail -f /tmp/build_log"
+alias catlogrobot="cat ~/app-root/logs/access_log | grep -i bot | sed 's/.* \([^ ]*bot\)/\1/i;' | sort | uniq -c | sort -n"
 
 
