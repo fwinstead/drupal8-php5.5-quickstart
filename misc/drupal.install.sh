@@ -3,12 +3,12 @@
 # install Drupal 8
 
 pushd ${OPENSHIFT_REPO_DIR}
-	VERSION=$(wget  -q -O - https://www.drupal.org/project/drupal | grep 'drupal-8' | sed 's/^.*drupal-//; s/-.*//;')
-	DRUPAL="drupal-${VERSION}" # NEED grab latest version
+	VERSION=$(wget -q -O - https://www.drupal.org/project/drupal | grep 'drupal-8' | sed 's/^.*drupal-//; s/-.*//;')
+	DRUPAL="drupal-${VERSION}"
 	FNAME="${DRUPAL}.tar.gz"
 	DEFAULT="${OPENSHIFT_REPO_DIR}${DRUPAL}/sites/default"
 	SETTINGS="${DEFAULT}/settings.php"
-	DEFAULTSETTINGS="${DEFAULT}/default.${SETTINGS}"
+	DEFAULTSETTINGS="${DEFAULT}/default.settings.php"
 
 	# Get Drupal 8.x 
 	if test \! -f "${FNAME}"; then wget "https://www.drupal.org/files/projects/${FNAME}" ; fi
@@ -17,13 +17,10 @@ pushd ${OPENSHIFT_REPO_DIR}
 	cp "${DEFAULTSETTINGS}" "${SETTINGS}"
 	chmod a+w "${DEFAULT}" "${SETTINGS}"
 
-	# Drupal settings.php
+	# Drupal settings.php with Openshift mods
 	cat "${OPENSHIFT_REPO_DIR}/misc/openshift.drupal.append.settings.php" >> "${SETTINGS}"
 
-	# "Trusted Host Settings" Security fix
-	# https://www.drupal.org/node/1992030
-	# https://www.drupal.org/node/2410395
-
+	# "Trusted Host Settings" Security fix: https://www.drupal.org/node/1992030 https://www.drupal.org/node/2410395
 	echo '# Trusted Host Settings security fix: ' >> "${SETTINGS}"
 	echo '$settings["trusted_host_patterns"] = array (' >> "${SETTINGS}"
 
@@ -34,7 +31,6 @@ pushd ${OPENSHIFT_REPO_DIR}
 	echo ');' >> "${SETTINGS}"
 
 	rm -rf www
-	mv drupal-8.0.3 www
-
+	mv "${DRUPAL}" www
 popd
 

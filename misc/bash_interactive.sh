@@ -1,9 +1,21 @@
 
-# Prompt ######################################
-if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-    PS1='\[\033[01;43m\]${OPENSHIFT_APP_NAME}\[\033[00m\] \[\033[01;34m\]\W\[\033[00m\]\$ '
+# check for line in app-root/data/.bash_profile ###################
+if grep "bash_interactive.sh" "${OPENSHIFT_DATA_DIR}.bash_profile" > /dev/null
+then
+	echo
 else
-    PS1='\u@\h:\w\$ '
+	echo -e "\tUpdating .bash_profile"
+	echo 'case $- in  *i*) ;; *) return;; esac ; . ${OPENSHIFT_HOMEDIR}app-root/repo/misc/bash_interactive.sh' >> "${OPENSHIFT_DATA_DIR}.bash_profile"
+fi
+
+# Prompt ######################################
+OFF='\[\033[00m\]'
+WONO='\[\033[01;43m\]'
+BONB='\[\033[01;34m\]'
+if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+    PS1=${WONO}${OPENSHIFT_APP_NAME}${OFF}' '${BONB}'\W'${OFF}'\$ '
+else
+    PS1='\w\$ '
 fi
 
 # If this is an xterm set the title to user@host:dir
@@ -27,14 +39,6 @@ function findx
 }
 # ############################################
 
-# check for line in app-root/data/.bash_profile
-grep "bash_interactive.sh" "${OPENSHIFT_DATA_DIR}.bash_profile"
-if test $? -ne 0 
-then
-	echo -e "\tUpdating .bash_profile"
-	echo 'case $- in  *i*) ;; *) return;; esac ; . ${OPENSHIFT_HOMEDIR}app-root/repo/misc/bash_interactive.sh' >> "${OPENSHIFT_DATA_DIR}.bash_profile"
-fi
-
 
 HISTCONTROL=ignoredups
 shopt -s histappend
@@ -50,5 +54,6 @@ alias catelog="cat ~/app-root/logs/error_log"
 alias catcronlog="cat ~/app-root/logs/cron*.log"
 alias catmysqllog="cat ~/app-root/logs/mysql.log"
 alias catphpmyadminlog="cat ~/app-root/logs/phpmyadmin.log"
+alias tailbuildlog="tail -f /tmp/build_log"
 
 
