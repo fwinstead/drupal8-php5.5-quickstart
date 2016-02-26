@@ -88,8 +88,8 @@ pushd ${OPENSHIFT_REPO_DIR}/misc
 				--enable-sysvshm \
 				--enable-sysvmsg \
 				--enable-opcache
-			# ##### make
-			# ##### make install
+			make
+			make install
 		popd
 		rm -rf php-${DIST_PHP_VER}
 	fi # MAKE end
