@@ -35,6 +35,10 @@ pushd ${OPENSHIFT_REPO_DIR}
 		echo -e "\t'${i}',"  >> "${SETTINGS}"
 	done
 	echo ');' >> "${SETTINGS}"
+
+	rm -rf www
+	mv drupal-8.0.3 www
+
 popd
 
 

@@ -124,6 +124,6 @@ then
 fi
 
 echo "Normal Finish."
-return 0
+
 # ## ### ####
 
