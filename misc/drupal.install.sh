@@ -41,5 +41,3 @@ pushd ${OPENSHIFT_REPO_DIR}
 
 popd
 
-
-
