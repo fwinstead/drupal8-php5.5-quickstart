@@ -25,7 +25,7 @@ pushd ${OPENSHIFT_REPO_DIR}
 	# https://www.drupal.org/node/1992030
 	# https://www.drupal.org/node/2410395
 
-	echo '# Trusted Host Settings security fix' >> "${SETTINGS}"
+	echo '# Trusted Host Settings security fix: ' >> "${SETTINGS}"
 	echo '$settings["trusted_host_patterns"] = array (' >> "${SETTINGS}"
 
 	echo "Trusted Host Settings String: " $REDIRECTS
