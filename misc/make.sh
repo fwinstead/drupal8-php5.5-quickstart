@@ -47,7 +47,7 @@ pushd ${OPENSHIFT_REPO_DIR}/misc
 			mkdir -p ${CONF_DIR}/php5/conf.d/
 	
 			[ ! -f Makefile ] && \
-				echo ./configure \
+				./configure \
 				--with-libdir=lib64 \
 				--prefix=${ROOT_DIR} \
 				--with-config-file-path=${CONF_DIR}/php5/ \
