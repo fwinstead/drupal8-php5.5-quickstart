@@ -7,7 +7,8 @@ Disabled: PHP 5.5, drush installs. Drupal to come.
 
 ## From RHC CLI
 
-rhc create-app d8test mysql-5.5 phpmyadmin-4 cron-1.4 diy-0.1 --from-code https://github.com/fwinstead/drupal8-php5.5-quickstart.git --env 'REDIRECTS=^.+\.rhcloud\.com$'
+rhc create-app d8test mysql-5.5 phpmyadmin-4 cron-1.4 diy-0.1 --from-code https://github.com/fwinstead/drupal8-php5.5-quickstart.git \
+	--env 'REDIRECTS=(a b c)'
 
 ## Acknowledgements
 
