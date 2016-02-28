@@ -57,3 +57,39 @@ pushd ${OPENSHIFT_REPO_DIR}
 
 
 popd
+
+
+exit
+
+cat << "EOF"
+#!/bin/bash
+
+O="8.0.3"
+N="8.0.4"
+
+echo -e "\tfile count"
+( cd drupal-${O} ; find . -type f ) > ${O}.data 
+( cd drupal-${N} ; find . -type f ) > ${N}.data 
+echo -e "\t\t$(wc -l ${O}.data)"
+echo -e "\t\t$(wc -l ${N}.data)"
+
+echo -e "\tdiff filenames"
+diff ${O}.data ${N}.data
+
+echo -e "\tcksums"
+( cd drupal-${O} ; find . -type f -print0 | xargs -0 cksum ) > ${O}.cksums
+( cd drupal-${N} ; find . -type f -print0 | xargs -0 cksum ) > ${N}.cksums
+cat *.cksums | sort | uniq -c | sort -n | grep -v '^ *2' | sed 's/^[^\.]*//;' | sort | uniq -c | sort -n > cksums.data 
+
+echo -e "\tcksum differences not in ./core"
+cat cksums.data | grep '^ *2 '| sed 's_\/[^\/]*$__; s/^ *2 //;' | sort | uniq -c|  grep -v './core'
+
+echo -e "\t ./core directories with file cksum diffrences"
+cat cksums.data | grep '^ *2 '| sed 's_\/[^\/]*$__; s/^ *2 //;' | sort | sed 's/^.\/core\///;' | sort | uniq | sed 's/\/.*$//;' | sort | uniq -c
+
+EOF
+
+
+
+
+

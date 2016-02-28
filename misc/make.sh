@@ -31,7 +31,8 @@ pushd ${OPENSHIFT_REPO_DIR}/misc
 	else
 		TARGZ="php-${DIST_PHP_VER}.tar.gz"
 		echo -e "\tDownloading PHP source code"
-		wget -nv "http://php.net/distributions/${TARGZ}" && tar -zxf "${TARGZ}" && rm -f "${TARGZ}"
+		wget -nv "http://php.net/distributions/${TARGZ}" && tar -zxf "${TARGZ}" 
+		# && rm -f "${TARGZ}"
 		if [ $? != 0 ]; then
 			echo "ERROR! Download failed: ${TARGZ}"
 			return 1	# FTW ????
@@ -89,9 +90,12 @@ pushd ${OPENSHIFT_REPO_DIR}/misc
 				--enable-sysvmsg \
 				--enable-opcache
 			make
+			make -n install
 			make install
+			# NEED: look at make install 
 		popd
-		rm -rf php-${DIST_PHP_VER}
+		# rm -rf php-${DIST_PHP_VER}
+		strip "${OPENSHIFT_HOMEDIR}app-root/runtime/bin/php" "${OPENSHIFT_HOMEDIR}app-root/runtime/bin/php-cgi"
 	fi # MAKE end
 popd
 ###################################	
