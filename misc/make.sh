@@ -89,8 +89,8 @@ pushd ${OPENSHIFT_REPO_DIR}/misc
 				--enable-sysvshm \
 				--enable-sysvmsg \
 				--enable-opcache
-			make -j
-			make -n install
+			make
+			# make -n install
 			make install
 			# NEED: look at make install 
 		popd
