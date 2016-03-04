@@ -11,8 +11,9 @@ PID=$(cat "${PID_FILE}" 2> /dev/null)
 if [ \! "${PID}" ] || [ \! -f "/proc/${PID}/stat" ]
 then
 	# start build in background
-	nohup bash ${OPENSHIFT_REPO_DIR}/misc/make.sh > ${LOG_FILE} 2>&1 &
-	PID=$!;  echo $PID > ${PID_FILE} ; echo -e "\tBuild started. pid : ${PID}"
+	# nohup bash ${OPENSHIFT_REPO_DIR}/misc/make.sh > ${LOG_FILE} 2>&1 &
+	bash ${OPENSHIFT_REPO_DIR}/misc/make.sh 2>&1
+	# PID=$!;  echo $PID > ${PID_FILE} ; echo -e "\tBuild started. pid : ${PID}"
 else
 	echo -e "\tBuild is already in progress, pid: ${PID}"
 	ps -ef | grep "${PID}"
