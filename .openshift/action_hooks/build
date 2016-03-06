@@ -15,8 +15,8 @@ DRUPAL_INSTALL_PID=$(cat "${DRUPAL_INSTALL_PID_FILE}" 2> /dev/null)
 if [ \! "${PHP_MAKE_PID}" ] || [ \! -f "/proc/${PHP_MAKE_PID}/stat" ]
 then
 	# start in background: make PHP
-	nohup bash ${OPENSHIFT_REPO_DIR}/misc/php_make.sh > ${PHP_MAKE_LOG_FILE} 2>&1 &
-	PHP_MAKE_PID=$!;  echo $PHP_MAKE_PID > ${PHP_MAKE_PID_FILE} ; echo -e "\tPHP make started. pid : ${PHP_MAKE_PID}"
+	#nohup bash ${OPENSHIFT_REPO_DIR}/misc/php_make.sh > ${PHP_MAKE_LOG_FILE} 2>&1 &
+	#PHP_MAKE_PID=$!;  echo $PHP_MAKE_PID > ${PHP_MAKE_PID_FILE} ; echo -e "\tPHP make started. pid : ${PHP_MAKE_PID}"
 	# start in background: install latest Drupal
 	nohup bash ${OPENSHIFT_REPO_DIR}/misc/drupal_install.sh > ${DRUPAL_INSTALL_LOG_FILE} 2>&1 &
 	DRUPAL_INSTALL_PID=$!;  echo $DRUPAL_INSTALL_PID > ${DRUPAL_INSTALL_PID_FILE} ; echo -e "\tDrupal install started. pid : ${DRUPAL_INSTALL_PID}"

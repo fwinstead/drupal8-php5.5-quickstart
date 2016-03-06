@@ -33,7 +33,6 @@ fi
 ###################################	
 # Drupal 8 install
 # pass NODRUPAL=1 to skip step
-NODRUPAL=1
 if test -z "${NODRUPAL}"
 then
 	pushd ${OPENSHIFT_REPO_DIR}
