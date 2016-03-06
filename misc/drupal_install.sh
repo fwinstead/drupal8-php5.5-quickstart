@@ -12,7 +12,7 @@ then
 	pushd ${OPENSHIFT_REPO_DIR}
 		DRUSH_PHAR="drush.phar"
 		echo -e "\tInstalling: ${DRUSH_PHAR}"
-		wget -nv "http://files.drush.org/${DRUSH_PHAR}"
+		wget "http://files.drush.org/${DRUSH_PHAR}"
 		if [ $? != 0 ]; then
 			echo -e "\tERROR! Download failed: ${DRUSH_PHAR}"
 			return 1	# FTW ????
@@ -58,6 +58,13 @@ then
 		mv www www.OLD
 		ln -s "${DRUPAL}" www
 	popd	
+fi
+###################################	
+# Twig install
+# pass NODRUPAL=1 to skip step
+if test -z "${NOTWIG}"
+then
+	echo -e "\tInstalling Twig."
 fi
 
 echo "Drupal install: Normal Finish."

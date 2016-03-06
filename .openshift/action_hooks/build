@@ -8,7 +8,7 @@ PHP_MAKE_PID_FILE="/tmp/php_make_pid"
 PHP_MAKE_PID=$(cat "${PHP_MAKE_PID_FILE}" 2> /dev/null)
 
 DRUPAL_INSTALL_LOG_FILE="/tmp/drupal_install_log"
-PHP_MAKE_PID_FILE="/tmp/drupal_install_pid"
+DRUPAL_MAKE_PID_FILE="/tmp/drupal_install_pid"
 DRUPAL_INSTALL_PID=$(cat "${DRUPAL_INSTALL_PID_FILE}" 2> /dev/null)
 
 # check to see if build is already running
