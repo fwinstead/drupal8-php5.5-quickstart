@@ -18,6 +18,8 @@ then
 			return 1	# FTW ????
 		fi
 		echo -e "\t\tHERE HERE"
+		touch aaaa
+		touch drush.phar.aaa
 		pwd
 		chmod 0555 "${DRUSH_PHAR}"
 		ls -l
