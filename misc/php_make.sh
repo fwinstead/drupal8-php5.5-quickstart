@@ -24,7 +24,7 @@ pushd ${OPENSHIFT_REPO_DIR}misc
 	echo -e "\tCheck PHP ${DIST_PHP_VER} not found. Install started."
 
 	pushd ${OPENSHIFT_DIY_DIR}
-	rm -f php-${DIST_PHP_VER}.tar.gz
+	# rm -f php-${DIST_PHP_VER}.tar.gz
 
 	if [ -d php-${DIST_PHP_VER} ]; then
 		echo -e "\tPHP Source code dir found. skipping downloading."
