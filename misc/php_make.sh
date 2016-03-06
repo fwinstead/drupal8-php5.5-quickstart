@@ -44,8 +44,7 @@ pushd ${OPENSHIFT_REPO_DIR}/misc
 	if test -z "${NOMAKE}"
 	then
 		pushd php-${DIST_PHP_VER}
-			mkdir -p ${LIB_DIR}
-			mkdir -p ${CONF_DIR}/php5/conf.d/
+			mkdir -vp ${LIB_DIR} ${CONF_DIR}/php5/conf.d/
 	
 			[ ! -f Makefile ] && \
 				./configure \
@@ -90,44 +89,14 @@ pushd ${OPENSHIFT_REPO_DIR}/misc
 				--enable-sysvmsg \
 				--enable-opcache
 			make
-			# make -n install
 			make install
-			# NEED: look at make install 
+			# NEED: look at make install   make -n install
 		popd
-		# rm -rf php-${DIST_PHP_VER}
 		strip "${OPENSHIFT_HOMEDIR}app-root/runtime/bin/php" "${OPENSHIFT_HOMEDIR}app-root/runtime/bin/php-cgi"
 	fi # MAKE end
 popd
-###################################	
-# drush install
-# http://www.drush.org/en/master/install/
-# pass NODRUSH=1 to skip step
-if test -z "${NODRUSH}"
-then
-	pushd ${OPENSHIFT_REPO_DIR}
-		DRUSH_PHAR="drush.phar"
-		echo -e "\tInstalling: ${DRUSH_PHAR}"
-		wget -nv "http://files.drush.org/${DRUSH_PHAR}"
-		if [ $? != 0 ]; then
-			echo -e "\tERROR! Download failed: ${DRUSH_PHAR}"
-			return 1	# FTW ????
-		fi
-		# TEST
-		echo -e "\tDrush test:"
-		PHP="${OPENSHIFT_HOMEDIR}/app-root/runtime/bin/php"
-		${PHP} ${OPENSHIFT_REPO_DIR}drush.phar core-status
-		echo
-	popd
-fi
-###################################	
-# Drupal 8 install
-# pass NODRUPAL=1 to skip step
-if test -z "${NODDRUPAL}"
-then
-	bash ${OPENSHIFT_REPO_DIR}/misc/drupal.install.sh
-fi
 
-echo "Normal Finish."
+echo "PHP make: Normal Finish."
 
 # ## ### ####
 

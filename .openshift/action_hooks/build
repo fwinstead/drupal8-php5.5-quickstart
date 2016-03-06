@@ -3,19 +3,26 @@
 # build site on Openshift
 # set -e  # MAYBE NEEDED
 
-LOG_FILE="/tmp/build_log"
-PID_FILE="/tmp/build_pid"
-PID=$(cat "${PID_FILE}" 2> /dev/null)
+PHP_MAKE_LOG_FILE="/tmp/php_make_log"
+PHP_MAKE_PID_FILE="/tmp/php_make_pid"
+PHP_MAKE_PID=$(cat "${PHP_MAKE_PID_FILE}" 2> /dev/null)
+
+DRUPAL_INSTALL_LOG_FILE="/tmp/drupal_install_log"
+PHP_MAKE_PID_FILE="/tmp/drupal_install_pid"
+DRUPAL_INSTALL_PID=$(cat "${DRUPAL_INSTALL_PID_FILE}" 2> /dev/null)
 
 # check to see if build is already running
-if [ \! "${PID}" ] || [ \! -f "/proc/${PID}/stat" ]
+if [ \! "${PHP_MAKE_PID}" ] || [ \! -f "/proc/${PHP_MAKE_PID}/stat" ]
 then
-	# start build in background
-	nohup bash ${OPENSHIFT_REPO_DIR}/misc/make.sh > ${LOG_FILE} 2>&1 &
-	PID=$!;  echo $PID > ${PID_FILE} ; echo -e "\tBuild started. pid : ${PID}"
+	# start in background: make PHP
+	nohup bash ${OPENSHIFT_REPO_DIR}/misc/php_make.sh > ${PHP_MAKE_LOG_FILE} 2>&1 &
+	PHP_MAKE_PID=$!;  echo $PHP_MAKE_PID > ${PHP_MAKE_PID_FILE} ; echo -e "\tPHP make started. pid : ${PHP_MAKE_PID}"
+	# start in background: install latest Drupal
+	nohup bash ${OPENSHIFT_REPO_DIR}/misc/drupal_install.sh > ${DRUPAL_INSTALL_LOG_FILE} 2>&1 &
+	DRUPAL_INSTALL_PID=$!;  echo $DRUPAL_INSTALL_PID > ${DRUPAL_INSTALL_PID_FILE} ; echo -e "\tDrupal install started. pid : ${DRUPAL_INSTALL_PID}"
 else
-	echo -e "\tBuild is already in progress, pid: ${PID}"
-	ps -ef | grep "${PID}"
+	echo -e "\tBuild is already in progress, pid: ${PHP_MAKE_PID}"
+	ps -ef | grep "${PHP_MAKE_PID}"
 fi
 exit
 
