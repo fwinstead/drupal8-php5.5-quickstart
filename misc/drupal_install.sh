@@ -73,7 +73,16 @@ fi
 # pass NODRUPAL=1 to skip step
 if test -z "${NOTWIG}"
 then
-	echo -e "\tInstalling Twig."
+	pushd ${OPENSHIFT_REPO_DIR}
+		echo -e "\tInstalling Twig."
+		echo -e "\t\tHERE HERE 2"
+		touch aaaa
+		touch drush.phar.aaa
+		pwd
+		chmod 0555 "${DRUSH_PHAR}"
+		ls -l
+		echo -e "\t\tHERE HERE 2"
+	popd	
 fi
 
 echo "Drupal install: Normal Finish."
