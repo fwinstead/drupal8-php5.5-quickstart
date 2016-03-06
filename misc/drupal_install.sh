@@ -7,6 +7,7 @@
 # drush install
 # http://www.drush.org/en/master/install/
 # pass NODRUSH=1 to skip step
+# NEED: FIX: seems to disappear maybe Drupal install, maybe php make ???
 if test -z "${NODRUSH}"
 then
 	pushd ${OPENSHIFT_REPO_DIR}
@@ -32,6 +33,7 @@ fi
 ###################################	
 # Drupal 8 install
 # pass NODRUPAL=1 to skip step
+NODRUPAL=1
 if test -z "${NODRUPAL}"
 then
 	pushd ${OPENSHIFT_REPO_DIR}
@@ -75,13 +77,6 @@ if test -z "${NOTWIG}"
 then
 	pushd ${OPENSHIFT_REPO_DIR}
 		echo -e "\tInstalling Twig."
-		echo -e "\t\tHERE HERE 2"
-		touch aaaa
-		touch drush.phar.aaa
-		pwd
-		chmod 0555 "${DRUSH_PHAR}"
-		ls -l
-		echo -e "\t\tHERE HERE 2"
 	popd	
 fi
 
