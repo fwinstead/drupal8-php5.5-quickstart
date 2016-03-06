@@ -3,21 +3,21 @@
 # build PHP and get latest Drupal 8
 
 # not sure if needed ?
-export HTTPD_ARGUMENT="-f ${OPENSHIFT_REPO_DIR}/conf/httpd.conf"
-env|>${OPENSHIFT_TMP_DIR}/httpd_temp.conf awk 'BEGIN{FS="="} $1 ~ /^OPENSHIFT/ {print "PassEnv", $1}'
+export HTTPD_ARGUMENT="-f ${OPENSHIFT_REPO_DIR}conf/httpd.conf"
+env|>${OPENSHIFT_TMP_DIR}httpd_temp.conf awk 'BEGIN{FS="="} $1 ~ /^OPENSHIFT/ {print "PassEnv", $1}'
 # not sure 
 
-export OPENSHIFT_RUNTIME_DIR="${OPENSHIFT_HOMEDIR}/app-root/runtime"
-export ROOT_DIR="${OPENSHIFT_HOMEDIR}/app-root/runtime"
-export LIB_DIR="${ROOT_DIR}/lib"
-export CONF_DIR="${OPENSHIFT_REPO_DIR}/conf"
+export OPENSHIFT_RUNTIME_DIR="${OPENSHIFT_HOMEDIR}app-root/runtime"
+export ROOT_DIR="${OPENSHIFT_HOMEDIR}app-root/runtime"
+export LIB_DIR="${ROOT_DIR}lib"
+export CONF_DIR="${OPENSHIFT_REPO_DIR}conf"
 export DIST_PHP_VER="5.5.31"
 
 ##################################################
 # PHP Install
-pushd ${OPENSHIFT_REPO_DIR}/misc
+pushd ${OPENSHIFT_REPO_DIR}misc
 
-	if [[ -x $OPENSHIFT_RUNTIME_DIR/bin/php-cgi ]] && [[ "`$OPENSHIFT_RUNTIME_DIR/bin/php-cgi`" =~ "${DIST_PHP_VER}" ]] 
+	if [[ -x ${OPENSHIFT_RUNTIME_DIR}bin/php-cgi ]] && [[ "`${OPENSHIFT_RUNTIME_DIR}bin/php-cgi`" =~ "${DIST_PHP_VER}" ]] 
 	then
 		return 0 # FTW ????
 	fi

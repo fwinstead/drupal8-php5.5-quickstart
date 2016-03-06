@@ -12,13 +12,16 @@ then
 	pushd ${OPENSHIFT_REPO_DIR}
 		DRUSH_PHAR="drush.phar"
 		echo -e "\tInstalling: ${DRUSH_PHAR}"
-		wget "http://files.drush.org/${DRUSH_PHAR}"
+		wget -nv "http://files.drush.org/${DRUSH_PHAR}"
 		if [ $? != 0 ]; then
 			echo -e "\tERROR! Download failed: ${DRUSH_PHAR}"
 			return 1	# FTW ????
 		fi
+		echo -e "\t\tHERE HERE"
 		pwd
+		chmod 0555 "${DRUSH_PHAR}"
 		ls -l
+		echo -e "\t\tHERE HERE"
 		# NEED: PHP installed to test
 		# PHP="${OPENSHIFT_HOMEDIR}/app-root/runtime/bin/php"
 		# ${PHP} ${OPENSHIFT_REPO_DIR}drush.phar core-status
@@ -38,7 +41,7 @@ then
 		DEFAULTSETTINGS="${DEFAULT}/default.settings.php"
 
 		# Get Drupal 8.x 
-		if test \! -f "${FNAME}"; then wget "https://www.drupal.org/files/projects/${FNAME}" ; fi
+		if test \! -f "${FNAME}"; then wget -nv "https://www.drupal.org/files/projects/${FNAME}" ; fi
 		time tar -zxf "${FNAME}" > /dev/null
 
 		cp "${DEFAULTSETTINGS}" "${SETTINGS}"
@@ -55,6 +58,9 @@ then
 			echo -e "\t'${i}',"  >> "${SETTINGS}"
 		done
 		echo ');' >> "${SETTINGS}"
+
+		# mv SITES SITES
+		# ln -s SITES SITES
 
 		mv www www.OLD
 		ln -s "${DRUPAL}" www
