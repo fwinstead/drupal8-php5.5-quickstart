@@ -17,6 +17,8 @@ then
 			echo -e "\tERROR! Download failed: ${DRUSH_PHAR}"
 			return 1	# FTW ????
 		fi
+		pwd
+		ls -l
 		# NEED: PHP installed to test
 		# PHP="${OPENSHIFT_HOMEDIR}/app-root/runtime/bin/php"
 		# ${PHP} ${OPENSHIFT_REPO_DIR}drush.phar core-status
@@ -25,11 +27,10 @@ fi
 ###################################	
 # Drupal 8 install
 # pass NODRUPAL=1 to skip step
-if test -z "${NODDRUPAL}"
+if test -z "${NODRUPAL}"
 then
 	pushd ${OPENSHIFT_REPO_DIR}
 		VERSION=$(wget -q -O - https://www.drupal.org/project/drupal | grep 'drupal-8' | sed 's/^.*drupal-//; s/-.*//;')
-		#VERSION="8.0.3"		# REMOVE after TESTING update.sh
 		DRUPAL="drupal-${VERSION}"
 		FNAME="${DRUPAL}.tar.gz"
 		DEFAULT="${OPENSHIFT_REPO_DIR}${DRUPAL}/sites/default"
