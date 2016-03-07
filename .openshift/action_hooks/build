@@ -1,28 +1,81 @@
 #!/bin/bash
 
-# build site on Openshift
-# set -e  # MAYBE NEEDED
+# build Drupal 8 site on Openshift
+# 
+
+# ## ### #### ##### #### ### ## #
+# tell httpd to use our httpd.conf file
+export HTTPD_ARGUMENT="-f ${OPENSHIFT_REPO_DIR}conf/httpd.conf"
+# Included by httpd.conf
+# https://httpd.apache.org/docs/2.4/env.html
+env|>${OPENSHIFT_TMP_DIR}httpd_temp.conf awk 'BEGIN{FS="="} $1 ~ /^OPENSHIFT/ {print "PassEnv", $1}'
+
+# ## ### #### ##### #### ### ## #
+# Downloads
+DOWNLOADS_DIR="${OPENSHIFT_REPO_DIR}downloads"
+
+DRUPAL_VER=$(wget -q -O - https://www.drupal.org/project/drupal | sed -n '/drupal-8/{s/^.*drupal-//; s/-.*//; p;}')
+DRUPAL_FN="drupal-${DRUPAL_VER}.tar.gz"
+
+DRUPAL_CONSOLE_FN="drupal.phar"
+
+DRUSH_FN="drush.phar"
+
+export PHP_VER="5.5.31"
+PHP_FN="php-${PHP_VER}.tar.gz"
+export PHP_TAR_PATH="${DOWNLOADS_DIR}/${PHP_FN}"
+
+TWIG_VER=$(wget -q -O - https://github.com/twigphp/Twig/releases | sed -n '/tar.gz/{s_^.*\/.*v__; s_\.tar\.gz.*__; p;}' | head -1)
+TWIG_FN="v${TWIG_VER}.tar.gz"
+
+HTTP_PHP="http://php.net/distributions/${PHP_FN}"
+HTTP_DRUPAL="https://www.drupal.org/files/projects/${DRUPAL_FN}"
+HTTP_DRUSH="http://files.drush.org/${DRUSH_FN}"
+HTTP_DRUPAL_CONSOLE="-O ${DRUPAL_CONSOLE_FN} https://drupalconsole.com/installer"
+HTTP_TWIG="https://github.com/twigphp/Twig/archive/${TWIG_FN}"
+# Composer ???
+
+# Retrieve files
+DOWNLOAD_LOG_FILE="/tmp/download_log"
+
+if [ \! -d "${DOWNLOADS_DIR}" ] ; then mkdir -vp "${DOWNLOADS_DIR}"; fi
+TO_DOWNLOAD=( "${HTTP_PHP}" "${HTTP_DRUPAL}" "${HTTP_DRUSH}" "${HTTP_DRUPAL_CONSOLE}" "${HTTP_TWIG}" )
+pushd "${DOWNLOADS_DIR}"
+	for ((i = 0; i < ${#TO_DOWNLOAD[@]}; i++))
+	do
+		CMD="wget -nv ${TO_DOWNLOAD[$i]}"
+		echo -e "\t$(date) Doing: ${CMD}" >> ${DOWNLOAD_LOG_FILE}
+		eval $CMD >> ${DOWNLOAD_LOG_FILE} 2>&1
+		if [ $? = 0 ]
+		then
+			echo -e "\t$(date) Success."  >> ${DOWNLOAD_LOG_FILE}
+		else
+			echo -e "\t$(date) FAIL."  >> ${DOWNLOAD_LOG_FILE}
+		fi
+	done
+popd
+# ## ### #### ##### #### ### ## #
+# start building
+
+DRUPAL_INSTALL_LOG_FILE="/tmp/drupal_install_log"
 
 PHP_MAKE_LOG_FILE="/tmp/php_make_log"
 PHP_MAKE_PID_FILE="/tmp/php_make_pid"
-PHP_MAKE_PID=$(cat "${PHP_MAKE_PID_FILE}" 2> /dev/null)
+PHP_MAKE_PID=$(cat "${PHP_MAKE_PID_FILE}" 2> /dev/null) # get PID if exists
 
-DRUPAL_INSTALL_LOG_FILE="/tmp/drupal_install_log"
-DRUPAL_INSTALL_PID_FILE="/tmp/drupal_install_pid"
-DRUPAL_INSTALL_PID=$(cat "${DRUPAL_INSTALL_PID_FILE}" 2> /dev/null)
-
-# check to see if build is already running
+# check to see if build is already running (PID file empty OR proccess no longer exists)
 if [ \! "${PHP_MAKE_PID}" ] || [ \! -f "/proc/${PHP_MAKE_PID}/stat" ]
 then
 	# start in background: make PHP
-	#nohup bash ${OPENSHIFT_REPO_DIR}/misc/php_make.sh > ${PHP_MAKE_LOG_FILE} 2>&1 &
-	#PHP_MAKE_PID=$!;  echo $PHP_MAKE_PID > ${PHP_MAKE_PID_FILE} ; echo -e "\tPHP make started. pid : ${PHP_MAKE_PID}"
+	nohup bash ${OPENSHIFT_REPO_DIR}misc/php_make.sh > ${PHP_MAKE_LOG_FILE} 2>&1 &
+	echo "$!" > ${PHP_MAKE_PID_FILE} ; echo -e "\tPHP make started."
 	# start in background: install latest Drupal
-	nohup bash ${OPENSHIFT_REPO_DIR}/misc/drupal_install.sh > ${DRUPAL_INSTALL_LOG_FILE} 2>&1 &
-	DRUPAL_INSTALL_PID=$!;  echo $DRUPAL_INSTALL_PID > ${DRUPAL_INSTALL_PID_FILE} ; echo -e "\tDrupal install started. pid : ${DRUPAL_INSTALL_PID}"
+	# nohup bash ${OPENSHIFT_REPO_DIR}misc/drupal_install.sh > ${DRUPAL_INSTALL_LOG_FILE} 2>&1 &
+	# echo -e "\tDrupal install started."
 else
 	echo -e "\tBuild is already in progress, pid: ${PHP_MAKE_PID}"
 	ps -ef | grep "${PHP_MAKE_PID}"
 fi
+
 exit
 
