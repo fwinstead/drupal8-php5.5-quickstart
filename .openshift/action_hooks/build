@@ -14,8 +14,9 @@ env|>${OPENSHIFT_TMP_DIR}httpd_temp.conf awk 'BEGIN{FS="="} $1 ~ /^OPENSHIFT/ {p
 # Downloads
 DOWNLOADS_DIR="${OPENSHIFT_REPO_DIR}downloads"
 
-DRUPAL_VER=$(wget -q -O - https://www.drupal.org/project/drupal | sed -n '/drupal-8/{s/^.*drupal-//; s/-.*//; p;}')
+export DRUPAL_VER=$(wget -q -O - https://www.drupal.org/project/drupal | sed -n '/drupal-8/{s/^.*drupal-//; s/-.*//; p;}')
 DRUPAL_FN="drupal-${DRUPAL_VER}.tar.gz"
+export DRUPAL_TAR_PATH="${DOWNLOADS_DIR}/${DRUPAL_FN}"
 
 DRUPAL_CONSOLE_FN="drupal.phar"
 
@@ -29,10 +30,10 @@ TWIG_VER=$(wget -q -O - https://github.com/twigphp/Twig/releases | sed -n '/tar.
 TWIG_FN="v${TWIG_VER}.tar.gz"
 
 HTTP_PHP="http://php.net/distributions/${PHP_FN}"
-HTTP_DRUPAL="https://www.drupal.org/files/projects/${DRUPAL_FN}"
+HTTP_DRUPAL="-O drupal_console-${DRUPAL_FN} https://www.drupal.org/files/projects/${DRUPAL_FN}"
 HTTP_DRUSH="http://files.drush.org/${DRUSH_FN}"
 HTTP_DRUPAL_CONSOLE="-O ${DRUPAL_CONSOLE_FN} https://drupalconsole.com/installer"
-HTTP_TWIG="https://github.com/twigphp/Twig/archive/${TWIG_FN}"
+HTTP_TWIG="-O twig-${TWIG_FN} https://github.com/twigphp/Twig/archive/${TWIG_FN}"
 # Composer ???
 
 # Retrieve files
@@ -68,10 +69,10 @@ if [ \! "${PHP_MAKE_PID}" ] || [ \! -f "/proc/${PHP_MAKE_PID}/stat" ]
 then
 	# start in background: make PHP
 	nohup bash ${OPENSHIFT_REPO_DIR}misc/php_make.sh > ${PHP_MAKE_LOG_FILE} 2>&1 &
-	echo "$!" > ${PHP_MAKE_PID_FILE} ; echo -e "\tPHP make started."
+	echo "$!" > ${PHP_MAKE_PID_FILE} ; echo -e "\t$(date) PHP make started."
 	# start in background: install latest Drupal
-	# nohup bash ${OPENSHIFT_REPO_DIR}misc/drupal_install.sh > ${DRUPAL_INSTALL_LOG_FILE} 2>&1 &
-	# echo -e "\tDrupal install started."
+	nohup bash ${OPENSHIFT_REPO_DIR}misc/drupal_install.sh > ${DRUPAL_INSTALL_LOG_FILE} 2>&1 &
+	echo -e "\tDrupal install started."
 else
 	echo -e "\tBuild is already in progress, pid: ${PHP_MAKE_PID}"
 	ps -ef | grep "${PHP_MAKE_PID}"

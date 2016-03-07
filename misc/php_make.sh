@@ -3,7 +3,7 @@
 # build PHP 
 
 export ROOT_DIR="${OPENSHIFT_HOMEDIR}app-root/runtime"
-export LIB_DIR="${ROOT_DIR}lib"	
+export LIB_DIR="${ROOT_DIR}/lib"	
 export CONF_DIR="${OPENSHIFT_REPO_DIR}conf"
 
 ##################################################
@@ -17,7 +17,7 @@ then
 	# untar php source code
 	tar -zxf "${PHP_TAR_PATH}"
 	pushd php-${PHP_VER}
-		mkdir -vp ${LIB_DIR} ${CONF_DIR}/php5/conf.d/
+		mkdir -vp ${LIB_DIR} ${CONF_DIR}/php5/conf.d
 		[ ! -f Makefile ] && \
 			./configure \
 			--with-libdir=lib64 \
