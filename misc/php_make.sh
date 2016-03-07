@@ -60,7 +60,7 @@ then
 			--enable-sysvshm \
 			--enable-sysvmsg \
 			--enable-opcache
-		make -j 4
+		make -j 2
 		make install
 		# NEED: look at make install, use: make -n install
 		strip ${OPENSHIFT_HOMEDIR}app-root/runtime/bin/php{-cgi,}

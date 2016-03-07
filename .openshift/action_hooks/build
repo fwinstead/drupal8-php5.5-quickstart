@@ -30,9 +30,9 @@ TWIG_VER=$(wget -q -O - https://github.com/twigphp/Twig/releases | sed -n '/tar.
 TWIG_FN="v${TWIG_VER}.tar.gz"
 
 HTTP_PHP="http://php.net/distributions/${PHP_FN}"
-HTTP_DRUPAL="-O drupal_console-${DRUPAL_FN} https://www.drupal.org/files/projects/${DRUPAL_FN}"
+HTTP_DRUPAL="https://www.drupal.org/files/projects/${DRUPAL_FN}"
 HTTP_DRUSH="http://files.drush.org/${DRUSH_FN}"
-HTTP_DRUPAL_CONSOLE="-O ${DRUPAL_CONSOLE_FN} https://drupalconsole.com/installer"
+HTTP_DRUPAL_CONSOLE="-O drupal_console-${DRUPAL_CONSOLE_FN} https://drupalconsole.com/installer"
 HTTP_TWIG="-O twig-${TWIG_FN} https://github.com/twigphp/Twig/archive/${TWIG_FN}"
 # Composer ???
 
