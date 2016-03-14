@@ -16,7 +16,6 @@ DOWNLOADS_DIR="${OPENSHIFT_REPO_DIR}downloads"
 
 export DRUPAL_VER=$(wget -q -O - https://www.drupal.org/project/drupal | sed -n '/drupal-8/{s/^.*drupal-//; s/-.*//; p;}')
 DRUPAL_FN="drupal-${DRUPAL_VER}.tar.gz"
-export DRUPAL_TAR_PATH="${DOWNLOADS_DIR}/${DRUPAL_FN}"
 
 DRUPAL_CONSOLE_FN="drupal.phar"
 

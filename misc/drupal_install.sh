@@ -2,6 +2,8 @@
 
 # install Drupal 8
 
+# NEED: verify putting in correct directories 
+
 ###################################	
 # drush install
 # http://www.drush.org/en/master/install/
@@ -19,14 +21,15 @@
 if test -z "${NODRUPAL}"
 then
 	pushd ${OPENSHIFT_REPO_DIR}
-		DRUPAL_DIR="drupal-${DRUPAL_VER}" # 2 use later
+		DRUPAL_DIR="drupal-${DRUPAL_VER}" #  <***********
+		DRUPAL_TAR_PATH="${OPENSHIFT_REPO_DIR}downloads/drupal-${DRUPAL_VER}.tar.gz"
 		DEFAULT_DIR="${OPENSHIFT_REPO_DIR}${DRUPAL_DIR}/sites/default"
 
 		SETTINGS="${DEFAULT_DIR}/settings.php"
 		DEFAULTSETTINGS="${DEFAULT_DIR}/default.settings.php"
 
 		# untar Drupal 8.x 
-		tar -zxf "${DRUPAL_TAR_PATH}"
+		tar -zxf "${DRUPAL_TAR_PATH}" 
 
 		cp "${DEFAULTSETTINGS}" "${SETTINGS}"; chmod a+w "${DEFAULT_DIR}" "${SETTINGS}"
 
