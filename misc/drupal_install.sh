@@ -21,6 +21,7 @@
 if test -z "${NODRUPAL}"
 then
 	pushd ${OPENSHIFT_REPO_DIR}
+		DRUPAL_VER=$(ls "${OPENSHIFT_REPO_DIR}downloads/drupal-*.tar.gz" | sed 's/drupal-//; s/\.tar\.gz//;')
 		DRUPAL_DIR="drupal-${DRUPAL_VER}" #  <***********
 		DRUPAL_TAR_PATH="${OPENSHIFT_REPO_DIR}downloads/drupal-${DRUPAL_VER}.tar.gz"
 		DEFAULT_DIR="${OPENSHIFT_REPO_DIR}${DRUPAL_DIR}/sites/default"

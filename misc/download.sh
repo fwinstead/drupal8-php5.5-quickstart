@@ -20,7 +20,7 @@ DRUSH_FN="drush.phar"			# Automaticly gets latest
 HTTP_DRUSH="http://files.drush.org/${DRUSH_FN}"
 if [ \! -f "${DOWNLOAD_DIR}/${DRUSH_FN}" ] ; then TO_DOWNLOAD+=("${HTTP_DRUSH}") ; fi
 
-PHP_VER="5.5.31"			# NEED: check for latest?
+PHP_VER=$(wget -q  -O - http://php.net/ | sed -n "/download-link/{s/.*\#v//; s/'>.*//; p;}" | head -1)
 PHP_FN="php-${PHP_VER}.tar.gz"
 HTTP_PHP="http://php.net/distributions/${PHP_FN}"
 if  [ "${PHP_PRECOMPILED_URL}" ] ; then HTTP_PHP="${PHP_PRECOMPILED_URL}" ; fi # if passed URL to precompiled PHP, then use that
